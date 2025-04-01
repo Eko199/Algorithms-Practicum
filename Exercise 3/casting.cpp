@@ -21,13 +21,33 @@ int main() {
         cin >> singers[i].start >> singers[i].duration;
     }
 
-    sort(studios, studios + n);
     sort(singers, singers + m);
 
     for (size_t i = 0; i < m; ++i) {
-        cout << singers[i].start << " " << singers[i].duration << endl;
+        size_t minStudio = 0;
+
+        for (size_t j = 1; j < n; ++j) {
+            if (studios[minStudio] <= singers[i].start) {
+                break;
+            }
+
+            if (studios[j] < studios[minStudio]) {
+                minStudio = j;
+            }
+        }
+
+        studios[minStudio] = max(studios[minStudio], singers[i].start) + singers[i].duration;
     }
 
+    size_t latestStudio = 0;
+
+    for (size_t i = 1; i < n; ++i) {
+        if (studios[i] >= studios[latestStudio]) {
+            latestStudio = i;
+        }
+    }
+
+    cout << studios[latestStudio] << " " << latestStudio + 1;
     return 0;
 }
 
