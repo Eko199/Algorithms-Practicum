@@ -8,6 +8,15 @@
         "span": "cpp",
         "stacktrace": "cpp",
         "regex": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "utility": "cpp",
+        "deque": "cpp",
+        "format": "cpp",
+        "vector": "cpp",
+        "xstring": "cpp",
+        "algorithm": "cpp",
+        "limits": "cpp",
+        "xutility": "cpp",
+        "queue": "cpp"
     }
 }
