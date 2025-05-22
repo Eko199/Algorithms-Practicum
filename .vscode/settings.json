@@ -17,6 +17,8 @@
         "algorithm": "cpp",
         "limits": "cpp",
         "xutility": "cpp",
-        "queue": "cpp"
+        "queue": "cpp",
+        "xlocale": "cpp",
+        "xlocinfo": "cpp"
     }
 }
