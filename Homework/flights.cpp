@@ -6,50 +6,33 @@ using namespace std;
 struct edge {
     unsigned u;
     bool is_flight;
-    unsigned n;
 };
 
 size_t n, m, k;
 vector<edge> graph[MAX];
 
-queue<pair<unsigned, unsigned>> q;
-bool visited[MAX];
-unsigned result[MAX];
+priority_queue<pair<unsigned, unsigned>, vector<pair<unsigned, unsigned>>, greater<pair<unsigned, unsigned>>> pq;
+unsigned d[MAX];
 
-bool bfs(unsigned v) {
-    q.push({ v, 1 });
-    visited[v] = true;
-
-    for (size_t i = 1; i <= m; ++i) {
-        result[i] = -1;
+void dijkstra(unsigned v) {
+    for (size_t i = 0; i <= n; ++i) {
+        d[i] = -1;
     }
 
-    bool f = false;
+    d[v] = 0;
+    pq.push({ 0, v });
 
-    while (!q.empty()) {
-        v = q.front().first;
-        unsigned level = q.front().second;
-        q.pop();
+    while (!pq.empty()) {
+        v = pq.top().second;
+        pq.pop();
 
         for (edge e : graph[v]) {
-            if (visited[e.u]) {
-                continue;
+            if (d[e.u] > d[v] + e.is_flight) {
+                d[e.u] = d[v] + e.is_flight;
+                pq.push({ d[e.u], e.u });
             }
-
-            if (e.is_flight) {
-                result[e.n] = min(result[e.n], level);
-
-                if (level == k) {
-                    f = true;
-                }
-            }
-
-            q.push({ e.u, 1 + (level + e.is_flight - 1) % k });
-            visited[e.u] = true;
         }
     }
-
-    return f;
 }
 
 int main() {
@@ -61,22 +44,35 @@ int main() {
 
     unsigned u, v;
     bool w;
+    queue<pair<unsigned, unsigned>> fly_lanes = {}; 
 
-    for (size_t i = 1; i <= m; ++i) {
+    for (size_t i = 0; i < m; ++i) {
         cin >> u >> v >> w;
-        graph[u].push_back({ v, w, i });
-        graph[v].push_back({ u, w, i });
+        graph[u].push_back({ v, w });
+        graph[v].push_back({ u, w });
+
+        if (w) {
+            fly_lanes.push({ u, v });
+        }
     }
 
-    if (!bfs(1)) {
+    dijkstra(1);
+
+    if (d[n] < k) {
         cout << "No";
         return 0;
     }
 
     cout << "Yes\n";
-    for (size_t i = 1; i <= m; ++i) {
-        if (result[i] <= k) {
-            cout << result[i] << '\n';
+    while (!fly_lanes.empty()) {
+        auto e = fly_lanes.front();
+        fly_lanes.pop();
+        unsigned dist = max(d[e.first], d[e.second]);
+
+        if (dist > k) {
+            cout << "1\n";
+        } else {
+            cout << dist << '\n';
         }
     }
 
